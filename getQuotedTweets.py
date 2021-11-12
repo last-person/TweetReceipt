@@ -11,10 +11,7 @@ import json
 import os
 import requests
 
-bearerToken = os.getenv("tweetreceipttoken")
-userId=os.getenv('tweetreceiptuserid')
-
-def create_mentions_url():
+def create_mentions_url(userId):
     """Create url for mentions of the (userId) account"""
 
     return "https://api.twitter.com/2/users/{}/mentions?expansions=referenced_tweets.id".format(userId)
@@ -26,10 +23,10 @@ def create_ref_tweet_url(refTweetId):
     return "https://api.twitter.com/2/tweets/{}?expansions=author_id&user.fields=name,username&tweet.fields=created_at".format(refTweetId)
 
 
-def get_mentions():
+def get_mentions(userId, bearerToken):
     """Get 10 most recent mentions for {userID}"""
 
-    url = create_mentions_url()
+    url = create_mentions_url(userId)
     response = requests.get(url, headers={"Authorization":"Bearer {}".format(bearerToken)})
     return response
 
@@ -61,9 +58,12 @@ def get_referenced_tweets(referencedTweets):
 
 
 def main():
-    mentionsResponse = get_mentions()
+    bearerToken = os.getenv("tweetreceipttoken")
+    userId = os.getenv('tweetreceiptuserid')
+
+    mentionsResponse = get_mentions(userId)
     jmentionsResponse = mentionsResponse.json()
-    get_referenced_tweets(jmentionsResponse)
+    get_referenced_tweets(jmentionsResponse, bearerToken)
 
    
 
