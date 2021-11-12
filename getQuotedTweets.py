@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
-import requests
 import json
 import os
+import requests
 
 # This script uses the twitter v2 api to look for quoted tweets mentioning the {userID} account specified.
 # It will then pull the text of those quoted tweets, along with the original tweeters username, and a timestamp
