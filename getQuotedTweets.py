@@ -31,7 +31,7 @@ def get_mentions(userId, bearerToken):
     return response
 
 
-def get_referenced_tweets(referencedTweets):
+def get_referenced_tweets(referencedTweets, bearerToken):
     """Get tweets references returned in get_mentions"""
 
     for tweet in referencedTweets['data']:
@@ -45,6 +45,8 @@ def get_referenced_tweets(referencedTweets):
             #send request to get object for the referenced tweet
             getRefTweet = requests.get(refUrl,headers={"Authorization":"Bearer {}".format(bearerToken)} )
             refTweetResponse = getRefTweet.json()
+            if 'data' not in refTweetResponse:
+                continue
             #print(refTweetResponse)
             #parse out author name and text of tweet to be printed
             origText=refTweetResponse['data']['text']
@@ -61,7 +63,7 @@ def main():
     bearerToken = os.getenv("tweetreceipttoken")
     userId = os.getenv('tweetreceiptuserid')
 
-    mentionsResponse = get_mentions(userId)
+    mentionsResponse = get_mentions(userId, bearerToken)
     jmentionsResponse = mentionsResponse.json()
     get_referenced_tweets(jmentionsResponse, bearerToken)
 
